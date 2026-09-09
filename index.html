@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>G&S足迹回忆</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:serif;}
+body{display:flex;height:100vh;overflow:hidden;}
+
+/* 左侧侧边栏 */
+.sidebar{
+  width:260px;
+  background:#f8fafc;
+  padding:30px 20px;
+  border-right:1px solid #e6edf7;
+  overflow-y:auto;
+}
+.sidebar h1{font-size:24px;margin-bottom:30px;color:#112;}
+.menu-item{
+  margin-bottom:12px;
+  padding:10px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  border:1px solid #cce4f6;
+  transition:0.2s;
+}
+.menu-item.active{background:#e6f3ff;}
+.submenu{margin:6px 0 12px 10px;display:flex;gap:6px;flex-wrap:wrap;}
+.submenu span{font-size:13px;padding:4px 8px;background:#fff;border-radius:12px;border:1px solid #ddd;cursor:pointer;}
+
+/* 右侧iframe容器 */
+.main{
+  flex:1;
+}
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+</style>
+</head>
+<body>
+<!-- 左侧菜单 -->
+<div class="sidebar">
+  <h1>G&S足迹回忆</h1>
+  <div class="menu-item active" data-page="home.html">HOME<br><small>Welcome page</small></div>
+  <div class="menu-item" data-page="about.html">MILET<br><small>About milet</small>
+    <div class="submenu">
+      <span>top</span><span>why milet</span><span>highlight</span>
+      <span>timeline</span><span>gallery</span><span>official</span>
+    </div>
+  </div>
+  <div class="menu-item" data-page="timeline.html">TIMELINE<br><small>Activity of milet</small></div>
+  <div class="menu-item" data-page="discography.html">DISCOGRAPHY<br><small>The milet anthology</small></div>
+  <div class="menu-item" data-page="live.html">LIVE ARCHIVE<br><small>Live records</small></div>
+  <div class="menu-item" data-page="news.html">NEWS<br><small>Curated news links</small></div>
+  <div class="menu-item" data-page="map.html">回忆地图<br><small>一起走过的地方</small></div>
+</div>
+
+<!-- 右侧用来加载各个独立页面 -->
+<div class="main">
+  <iframe id="contentFrame" src="home.html"></iframe>
+</div>
+
+<script>
+const menuItems = document.querySelectorAll('.menu-item');
+const frame = document.getElementById('contentFrame');
+menuItems.forEach(item=>{
+  item.onclick = ()=>{
+    // 菜单激活高亮
+    menuItems.forEach(m=>m.classList.remove('active'));
+    item.classList.add('active');
+    // 切换iframe加载的页面
+    const targetPage = item.dataset.page;
+    frame.src = targetPage;
+  }
+})
+</script>
+</body>
+</html>

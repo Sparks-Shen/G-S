@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+}
+.wrapper{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+h2{
+  margin:8px 16px;
+  font-size:22px;
+}
+#map{
+  flex:1;
+  width:100%;
+}
+
+/* 标记外层容器：只负责定位，不旋转 */
+.pin-container{
+  position: relative;
+  width: 44px;
+  height: 52px;
+  transition: all 0.2s ease;
+}
+
+/* 红色水滴底座：只有这个旋转 -45° */
+.pin-bg{
+  width: 44px;
+  height: 44px;
+  background: #e63946;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border: 2px solid white;
+  box-sizing: border-box;
+}
+
+/* 圆形头像遮罩层：永远正向，不旋转 */
+.pin-circle{
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid white;
+  overflow: hidden;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 圆形里的图片：永远正向显示 */
+.pin-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: rotate(0deg);
+}
+
+/* hover 整体放大置顶 */
+.pin-container.hover{
+  transform: scale(1.8);
+  z-index: 9999 !important;
+}
+
+/* 悬浮黑底店名提示 */
+.marker-tooltip{
+  white-space: nowrap;
+  background: #222;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <h2>回忆地图</h2>
+  <div id="map"></div>
+</div>
+
+<!-- 店铺配置文件 -->
+<script src="shopData.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const mymap = L.map('map').setView([31.22, 121.46], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(mymap);
+
+placeList.forEach(place=>{
+  const customIcon = L.divIcon({
+    className: "",
+    html: `
+    <div class="pin-container">
+      <div class="pin-bg"></div>
+      <div class="pin-circle">
+        <img class="pin-img" src="${place.img}" alt="${place.name}">
+      </div>
+    </div>
+    `,
+    iconSize: [44, 52],
+    iconAnchor: [22, 52]
+  })
+  const marker = L.marker([place.lat, place.lng], {icon: customIcon}).addTo(mymap);
+
+  // 鼠标悬浮显示店名
+  marker.bindTooltip(place.name, {
+    className: "marker-tooltip",
+    permanent: false,
+    offset: [0, -56]
+  })
+
+  // 点击直接跳转详情页
+  marker.on('click', function(){
+    window.open(place.link, "_blank");
+  })
+
+  // hover 放大置顶
+  marker.on('mouseover', function () {
+    this._icon.querySelector('.pin-container').classList.add('hover');
+  });
+  marker.on('mouseout', function () {
+    this._icon.querySelector('.pin-container').classList.remove('hover');
+  })
+})
+</script>
+</body>
+</html>
