@@ -131,6 +131,59 @@ def _sha1(path):
     return h.hexdigest()
 
 
+def _smart_square_crop(path, white_th=235):
+    """把图片裁成“内容最多、留白最少”的正方形区域。
+    普通照片=保持居中不变；一侧有白墙/空白背景的照片会自动把空白侧裁掉。
+    用积分图实现，几百 KB 的图片几秒钟内完成。"""
+    try:
+        from PIL import Image
+        img = Image.open(path)
+        w, h = img.size
+        gray = img.convert("RGB").convert("L")
+        g = gray.load()
+        side = min(w, h)
+
+        # 白色掩码 + 积分图：white_count(x0,y0,x1,y1) 为区域内近白像素个数
+        W1 = w + 1
+        integral = [0] * (W1 * (h + 1))
+        for y in range(h):
+            row = y * w
+            iy0, iy1 = y * W1, (y + 1) * W1
+            run = 0
+            for x in range(w):
+                run += 1 if g[x, y] >= white_th else 0
+                integral[iy1 + x + 1] = integral[iy0 + x + 1] + run
+
+        def white_count(x0, y0, x1, y1):
+            return (integral[y1 * W1 + x1] - integral[y0 * W1 + x1]
+                    - integral[y1 * W1 + x0] + integral[y0 * W1 + x0])
+
+        best = None  # (非白占比, 边长, x0, y0)，占比相同取更大的窗口
+        s = side
+        while s >= max(80, int(side * 0.5)):
+            step = max(8, s // 8)
+            for y0 in range(0, h - s + 1, step):
+                for x0 in range(0, w - s + 1, step):
+                    wc = white_count(x0, y0, x0 + s, y0 + s)
+                    score = (s * s - wc) / (s * s)
+                    if best is None or (score, s) > (best[0], best[1]):
+                        best = (score, s, x0, y0)
+            s -= max(8, side // 10)
+
+        if best is None:
+            return False
+        score, s, x0, y0 = best
+        if s == side and x0 == 0 and y0 == 0 and score >= 0.999:
+            return False  # 没有白边，原样保留
+        img.load()
+        img.crop((x0, y0, x0 + s, y0 + s)).save(path)
+        print(f"  已自动裁出内容最集中的正方形区域：{w}×{h} → {s}×{s}（左上角 {x0},{y0}）")
+        return True
+    except Exception as e:
+        print(f"  !! 自动裁剪失败（不影响使用）：{e}")
+        return False
+
+
 def js_str(s):
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
@@ -368,7 +421,7 @@ def add_shop(cat):
         print("已取消")
         return
 
-    # 0) 复制图片（确认之后才做）
+    # 0) 复制图片并智能裁剪（确认之后才做）
     if img_file and img_src:
         dest = os.path.join(BASE, "assets", "img", img_file)
         if os.path.abspath(img_src) != os.path.abspath(dest):
@@ -380,9 +433,14 @@ def add_shop(cat):
                 elif ask(f"assets/img/{img_file} 已存在且内容不同，覆盖吗？(y/n)", "n").lower() == "y":
                     shutil.copyfile(img_src, dest)
                     print(f"  图片已复制到 assets/img/{img_file}")
+                    _smart_square_crop(dest)
             else:
                 shutil.copyfile(img_src, dest)
                 print(f"  图片已复制到 assets/img/{img_file}")
+                _smart_square_crop(dest)
+    elif img_file:
+        # 图片已经在 assets/img/ 里：原地智能裁剪，去掉一侧的空白
+        _smart_square_crop(os.path.join(BASE, "assets", "img", img_file))
 
     # 1) 写入卡片数据（foodData.js / funData.js）
     img_field = f', img:"assets/img/{img_file}"' if img_file else ""

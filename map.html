@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
 html, body {
   margin:0;
   padding:0;
@@ -66,12 +67,15 @@ h2{
   box-shadow: 0 0 0 2px #e63946, 0 3px 10px rgba(0,0,0,0.28);
 }
 
-/* 圆形里的图片：object-position 默认居中，个别照片可通过 shopData.js 的 pos 字段调整焦点 */
+/* 圆形里的图片：绝对定位强制铺满圆形，取图片最中间区域，任何情况下都不会偏移留白 */
 .pin-img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
 }
 
 /* 底部红色指针小三角 */
