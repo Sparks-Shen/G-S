@@ -18,4 +18,6 @@ const placeList = [
     link:"places/shop1.html"
   },
   { lng: 121.410122, lat: 31.21905, name:"大寶口福·海鲜排档（长宁来福士店）", img:"assets/img/大寶口福·海鲜排档（长宁来福士店）.png", link:"places/大寶口福·海鲜排档（长宁来福士店）.html" },
+
+  { lng: 121.499329, lat: 31.238028, name:"百丽宫影城（国金中心店）", img:"assets/img/百丽宫ifc.jpg", link:"places/百丽宫影城（国金中心店）.html" },
 ];
