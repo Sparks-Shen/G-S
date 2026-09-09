@@ -42,56 +42,56 @@ h2{
   width:100%;
 }
 
-/* 标记外层容器：只负责定位，不旋转 */
+/* 标记外层容器：大头像圆 + 底部红色指针 */
 .pin-container{
   position: relative;
-  width: 44px;
-  height: 52px;
+  width: 56px;
+  height: 66px;
   transition: all 0.2s ease;
 }
 
-/* 红色水滴底座：只有这个旋转 -45° */
-.pin-bg{
-  width: 44px;
-  height: 44px;
-  background: #e63946;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  border: 2px solid white;
-  box-sizing: border-box;
-}
-
-/* 圆形头像遮罩层：永远正向，不旋转 */
+/* 圆形头像：白描边 + 红色外圈（大图裁切更宽容，主体不容易被切掉） */
 .pin-circle{
   position: absolute;
-  top: 11px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  border: 1px solid white;
+  border: 3px solid #fff;
   overflow: hidden;
   z-index: 2;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  background: #eef2f6;
+  box-shadow: 0 0 0 2px #e63946, 0 3px 10px rgba(0,0,0,0.28);
 }
 
-/* 圆形里的图片：永远正向显示 */
+/* 圆形里的图片：object-position 默认居中，个别照片可通过 shopData.js 的 pos 字段调整焦点 */
 .pin-img{
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: rotate(0deg);
+}
+
+/* 底部红色指针小三角 */
+.pin-point{
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 16px solid #e63946;
+  z-index: 1;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
 }
 
 /* hover 整体放大置顶 */
 .pin-container.hover{
-  transform: scale(1.8);
+  transform: scale(1.6);
   z-index: 9999 !important;
 }
 
@@ -130,26 +130,32 @@ placeList.forEach(place=>{
     className: "",
     html: `
     <div class="pin-container">
-      <div class="pin-bg"></div>
       <div class="pin-circle">
-        <img class="pin-img" src="${place.img}" alt="${place.name}">
+        <img class="pin-img" src="${place.img}" alt="${place.name}"
+             style="object-position:${place.pos || '50% 50%'};">
       </div>
+      <div class="pin-point"></div>
     </div>
     `,
-    iconSize: [44, 52],
-    iconAnchor: [22, 52]
+    iconSize: [56, 66],
+    iconAnchor: [28, 66]
   })
   const marker = L.marker([place.lat, place.lng], {icon: customIcon}).addTo(mymap);
 
-  // 头像图片加载失败时隐藏，避免出现裂图图标
+  // 头像图片加载失败时，用店名首字代替，避免出现裂图图标
   const pinImg = marker._icon.querySelector('.pin-img');
-  pinImg.onerror = ()=>{ pinImg.style.display = 'none'; };
+  pinImg.onerror = ()=>{
+    const fallback = document.createElement('span');
+    fallback.textContent = place.name.charAt(0);
+    fallback.style.cssText = 'display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px;font-weight:bold;color:#8a97a6;background:#eef2f6;';
+    pinImg.replaceWith(fallback);
+  };
 
   // 鼠标悬浮显示店名
   marker.bindTooltip(place.name, {
     className: "marker-tooltip",
     permanent: false,
-    offset: [0, -56]
+    offset: [0, -64]
   })
 
   // 点击在右侧内容区打开详情页，侧边栏保持不动
