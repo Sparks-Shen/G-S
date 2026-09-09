@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>主页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+html,body{height:100%;}
+body{
+  background:linear-gradient(180deg,#fcfdff 0%,#eef5fb 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px;
+}
+.hero{text-align:center;max-width:760px;animation:fadeUp 0.6s ease;}
+.hero h1{font-size:44px;color:#1a2533;letter-spacing:4px;}
+.hero .sub{margin-top:16px;font-size:15px;color:#8a97a6;letter-spacing:1px;}
+.hero .ornament{margin:22px auto 34px;color:#bcd6ec;font-size:18px;letter-spacing:8px;}
+
+/* 三个入口卡片 */
+.entries{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;}
+.entry{
+  width:190px;
+  padding:34px 16px 30px;
+  background:#fff;
+  border:1px solid #e3ecf5;
+  border-radius:16px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+}
+.entry:hover{
+  transform:translateY(-5px);
+  border-color:#bcd6ec;
+  box-shadow:0 12px 28px rgba(60,110,160,0.12);
+}
+.entry .icon-box{
+  width:66px;height:66px;margin:0 auto;
+  border-radius:50%;
+  background:linear-gradient(135deg,#e9f4fd,#d6e9f8);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  transition:transform 0.25s ease;
+}
+.entry:hover .icon-box{transform:scale(1.1) rotate(-5deg);}
+.entry .name{margin-top:16px;font-size:17px;font-weight:bold;color:#22354a;}
+.entry .en{margin-top:5px;font-size:11px;color:#a3b0be;letter-spacing:2.5px;}
+
+.foot{margin-top:42px;font-size:12px;color:#b3c0cd;letter-spacing:1px;animation:fadeUp 0.6s ease 0.2s both;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>G&S足迹回忆</h1>
+  <p class="sub">记录我们一起走过的每一家店、每一顿饭</p>
+  <div class="ornament">❧ · ❧</div>
+  <div class="entries">
+    <div class="entry" onclick="go('food.html')">
+      <div class="icon-box">🍜</div>
+      <div class="name">美食信息</div>
+      <div class="en">FOOD</div>
+    </div>
+    <div class="entry" onclick="go('fun.html')">
+      <div class="icon-box">🎮</div>
+      <div class="name">娱乐信息</div>
+      <div class="en">FUN</div>
+    </div>
+    <div class="entry" onclick="go('map.html')">
+      <div class="icon-box">🗺️</div>
+      <div class="name">回忆地图</div>
+      <div class="en">MAP</div>
+    </div>
+  </div>
+</div>
+<div class="foot">G & S 的小世界 · 2026</div>
+<script>
+// 在 iframe 里时通知外层切换页面；单独打开时直接跳转
+function go(page){
+  if(parent.navigate){ parent.navigate(page); }
+  else { location.href = page; }
+}
+</script>
+</body>
+</html>

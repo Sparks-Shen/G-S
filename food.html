@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>美食信息</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+body{background:#f5f8fb;min-height:100%;}
+
+/* 页头 */
+.page-head{
+  display:flex;align-items:baseline;gap:12px;
+  padding:26px 28px 6px;
+}
+.page-head h2{font-size:26px;color:#1a2533;letter-spacing:1px;}
+.page-head .count{
+  font-size:12px;color:#8aa0b8;
+  background:#e9f1f9;border:1px solid #d5e4f2;
+  padding:3px 10px;border-radius:999px;
+}
+.tip{font-size:13px;color:#9aa7b5;margin-top:8px;padding-left:28px;}
+
+/* 商家卡片网格：一行四个，像美团 */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  padding:18px 28px 44px;
+}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr);}}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid #e7eef5;
+  transition:all 0.25s ease;
+  animation:fadeUp 0.5s ease both;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:#c6dcef;
+  box-shadow:0 12px 26px rgba(60,110,160,0.13);
+}
+
+/* 上半部分：商家图片 */
+.card-img{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  background:#eef2f6;
+  overflow:hidden;
+}
+.card-img img{
+  width:100%;height:100%;
+  object-fit:cover;display:block;
+  transition:transform 0.4s ease;
+}
+.card:hover .card-img img{transform:scale(1.06);}
+.img-fallback{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:46px;color:#b6c0cc;
+}
+
+/* 下半部分：商家名字 + 地址 */
+.card-info{padding:12px 14px 14px;border-top:1px solid #f0f4f8;}
+.card-name{
+  font-weight:bold;font-size:15px;color:#22354a;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card-addr{
+  margin-top:6px;font-size:12px;color:#8a97a6;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="page-head">
+  <h2>美食信息</h2>
+  <span class="count" id="count"></span>
+</div>
+<p class="tip">点击卡片查看详情；商家数据在 foodData.js 里维护</p>
+<div id="grid" class="grid"></div>
+
+<script src="foodData.js"></script>
+<script>
+const grid = document.getElementById('grid');
+document.getElementById('count').textContent = '共 ' + foodList.length + ' 家';
+
+// 在 iframe 里时只切换右侧内容，侧边栏保持不动；单独打开时直接跳转
+function openDetail(link){
+  if(parent.navigate){ parent.navigate(link); }
+  else { location.href = link; }
+}
+
+foodList.forEach((item,i)=>{
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (i*60) + 'ms';
+  card.innerHTML = `
+    <div class="card-img">
+      ${item.img
+        ? `<img src="${item.img}" alt="${item.name}" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ''}
+      <div class="img-fallback" style="display:${item.img ? 'none' : 'flex'}">${item.emoji || '🏪'}</div>
+    </div>
+    <div class="card-info">
+      <div class="card-name">${item.name}</div>
+      <div class="card-addr">📍 ${item.address}</div>
+    </div>`;
+  // 配置了 link 的商家，点击后在右侧内容区打开详情页
+  if(item.link){ card.onclick = ()=>openDetail(item.link); }
+  else { card.style.cursor = 'default'; }
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

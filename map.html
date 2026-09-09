@@ -9,6 +9,8 @@ html, body {
   padding:0;
   width:100%;
   height:100%;
+  font-family:Georgia,"Songti SC","SimSun",serif;
+  background:#f5f8fb;
 }
 .wrapper{
   width:100%;
@@ -16,10 +18,21 @@ html, body {
   display:flex;
   flex-direction:column;
 }
-h2{
-  margin:8px 16px;
-  font-size:22px;
+
+/* 页头 */
+.map-head{
+  display:flex;align-items:baseline;gap:10px;
+  padding:16px 24px 10px;
+  background:#fff;
+  border-bottom:1px solid #e7eef5;
 }
+h2{
+  margin:0;
+  font-size:22px;
+  color:#1a2533;
+  letter-spacing:1px;
+}
+.map-head .sub{font-size:13px;color:#9aa7b5;}
 #map{
   flex:1;
   width:100%;
@@ -92,7 +105,10 @@ h2{
 </head>
 <body>
 <div class="wrapper">
-  <h2>回忆地图</h2>
+  <div class="map-head">
+    <h2>回忆地图</h2>
+    <span class="sub">一起走过的地方</span>
+  </div>
   <div id="map"></div>
 </div>
 
@@ -121,6 +137,10 @@ placeList.forEach(place=>{
   })
   const marker = L.marker([place.lat, place.lng], {icon: customIcon}).addTo(mymap);
 
+  // 头像图片加载失败时隐藏，避免出现裂图图标
+  const pinImg = marker._icon.querySelector('.pin-img');
+  pinImg.onerror = ()=>{ pinImg.style.display = 'none'; };
+
   // 鼠标悬浮显示店名
   marker.bindTooltip(place.name, {
     className: "marker-tooltip",
@@ -128,9 +148,10 @@ placeList.forEach(place=>{
     offset: [0, -56]
   })
 
-  // 点击直接跳转详情页
+  // 点击在右侧内容区打开详情页，侧边栏保持不动
   marker.on('click', function(){
-    window.open(place.link, "_blank");
+    if(parent.navigate){ parent.navigate(place.link); }
+    else { window.open(place.link, "_blank"); }
   })
 
   // hover 放大置顶

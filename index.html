@@ -4,57 +4,98 @@
 <meta charset="UTF-8">
 <title>G&S足迹回忆</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:serif;}
-body{display:flex;height:100vh;overflow:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+body{display:flex;height:100vh;overflow:hidden;background:#eef3f8;}
 
 /* 左侧侧边栏 */
 .sidebar{
-  width:260px;
-  background:#f8fafc;
-  padding:30px 20px;
-  border-right:1px solid #e6edf7;
+  width:270px;
+  background:linear-gradient(180deg,#fcfdff 0%,#f1f7fc 100%);
+  padding:40px 22px 26px;
+  border-right:1px solid #e3ecf5;
   overflow-y:auto;
+  display:flex;
+  flex-direction:column;
 }
-.sidebar h1{font-size:24px;margin-bottom:30px;color:#112;}
+
+/* 顶部品牌区（下方留出更多空间，让菜单按钮整体下移） */
+.brand{text-align:center;margin-bottom:46px;}
+.brand .logo{font-size:26px;font-weight:bold;color:#1a2533;letter-spacing:2px;}
+.brand .line{width:36px;height:2px;background:#bcd6ec;margin:12px auto;}
+.brand .tagline{font-size:12px;color:#9aa7b5;letter-spacing:2px;}
+
+/* 菜单按钮 */
 .menu-item{
-  margin-bottom:12px;
-  padding:10px 12px;
-  border-radius:8px;
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:14px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid #dbe7f2;
+  border-radius:12px;
   cursor:pointer;
-  border:1px solid #cce4f6;
-  transition:0.2s;
+  transition:all 0.25s ease;
 }
-.menu-item.active{background:#e6f3ff;}
-.submenu{margin:6px 0 12px 10px;display:flex;gap:6px;flex-wrap:wrap;}
-.submenu span{font-size:13px;padding:4px 8px;background:#fff;border-radius:12px;border:1px solid #ddd;cursor:pointer;}
+.menu-item:hover{
+  transform:translateX(4px);
+  border-color:#bcd6ec;
+  box-shadow:0 4px 12px rgba(60,110,160,0.10);
+}
+.menu-item.active{
+  background:linear-gradient(90deg,#e9f4fd,#f5faff);
+  border-color:#a9cdf0;
+  box-shadow:0 4px 14px rgba(60,110,160,0.14);
+}
+.menu-item .icon{font-size:22px;line-height:1;}
+.menu-item .cn{display:block;font-size:15px;font-weight:bold;color:#22354a;}
+.menu-item .en{display:block;font-size:11px;color:#9aa7b5;letter-spacing:1.5px;margin-top:3px;}
+
+/* 底部小字 */
+.foot{
+  margin-top:auto;
+  padding-top:26px;
+  text-align:center;
+  font-size:11px;
+  color:#b3c0cd;
+  letter-spacing:1px;
+}
 
 /* 右侧iframe容器 */
-.main{
-  flex:1;
-}
+.main{flex:1;}
 iframe{
   width:100%;
   height:100%;
   border:none;
+  background:#f5f8fb;
 }
 </style>
 </head>
 <body>
 <!-- 左侧菜单 -->
 <div class="sidebar">
-  <h1>G&S足迹回忆</h1>
-  <div class="menu-item active" data-page="home.html">HOME<br><small>Welcome page</small></div>
-  <div class="menu-item" data-page="about.html">MILET<br><small>About milet</small>
-    <div class="submenu">
-      <span>top</span><span>why milet</span><span>highlight</span>
-      <span>timeline</span><span>gallery</span><span>official</span>
-    </div>
+  <div class="brand">
+    <div class="logo">G&S足迹回忆</div>
+    <div class="line"></div>
+    <div class="tagline">OUR FOOTPRINTS</div>
   </div>
-  <div class="menu-item" data-page="timeline.html">TIMELINE<br><small>Activity of milet</small></div>
-  <div class="menu-item" data-page="discography.html">DISCOGRAPHY<br><small>The milet anthology</small></div>
-  <div class="menu-item" data-page="live.html">LIVE ARCHIVE<br><small>Live records</small></div>
-  <div class="menu-item" data-page="news.html">NEWS<br><small>Curated news links</small></div>
-  <div class="menu-item" data-page="map.html">回忆地图<br><small>一起走过的地方</small></div>
+
+  <div class="menu-item active" data-page="home.html">
+    <span class="icon">🏠</span>
+    <span class="txt"><span class="cn">主页</span><span class="en">HOME</span></span>
+  </div>
+  <div class="menu-item" data-page="food.html">
+    <span class="icon">🍜</span>
+    <span class="txt"><span class="cn">美食信息</span><span class="en">FOOD</span></span>
+  </div>
+  <div class="menu-item" data-page="fun.html">
+    <span class="icon">🎮</span>
+    <span class="txt"><span class="cn">娱乐信息</span><span class="en">FUN</span></span>
+  </div>
+  <div class="menu-item" data-page="map.html">
+    <span class="icon">🗺️</span>
+    <span class="txt"><span class="cn">回忆地图</span><span class="en">MAP</span></span>
+  </div>
+
+  <div class="foot">G & S 的小世界</div>
 </div>
 
 <!-- 右侧用来加载各个独立页面 -->
@@ -65,16 +106,33 @@ iframe{
 <script>
 const menuItems = document.querySelectorAll('.menu-item');
 const frame = document.getElementById('contentFrame');
-menuItems.forEach(item=>{
-  item.onclick = ()=>{
-    // 菜单激活高亮
-    menuItems.forEach(m=>m.classList.remove('active'));
-    item.classList.add('active');
-    // 切换iframe加载的页面
-    const targetPage = item.dataset.page;
-    frame.src = targetPage;
+
+// 切换页面的统一入口：侧边栏、主页入口卡片、商家详情页的返回键都会调用它
+// 如果目标页面不是菜单里的板块（比如商家详情页），就保持当前高亮不变
+function navigate(page){
+  const match = [...menuItems].find(m=>m.dataset.page===page);
+  if(match){
+    menuItems.forEach(m=>m.classList.toggle('active', m===match));
   }
-})
+  frame.src = page;
+}
+menuItems.forEach(item=>{
+  item.onclick = ()=>navigate(item.dataset.page);
+});
+window.navigate = navigate;
+
+// 页面切换时的淡入过渡
+frame.addEventListener('load', ()=>{
+  frame.style.animation = 'none';
+  frame.offsetHeight; // 触发重排，让动画可以重复播放
+  frame.style.animation = 'fadeIn 0.35s ease';
+});
 </script>
+<style>
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+</style>
 </body>
 </html>
