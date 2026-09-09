@@ -1,7 +1,7 @@
 // 店铺巡礼点位配置
 const placeList = [
   {
-    lng: 121.410580,
+    lng: 121.410580, 
     lat: 31.218303,
     name:"乔氏·品绅台球（长宁来福士店）",
     img:"assets/img/长宁来福士台球.jpg",
