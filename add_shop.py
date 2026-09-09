@@ -281,6 +281,10 @@ function go(page){
   if(parent.navigate){ parent.navigate(page); }
   else { location.href = page; }
 }
+// 图片地址加时间戳，避免浏览器缓存旧图
+document.querySelectorAll('img').forEach(function(i){
+  if(i.src && i.src.indexOf('?t=') === -1){ i.src += '?t=' + Date.now(); }
+});
 </script>
 </body>
 </html>

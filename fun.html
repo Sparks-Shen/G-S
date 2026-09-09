@@ -117,7 +117,7 @@ funList.forEach((item,i)=>{
   card.innerHTML = `
     <div class="card-img">
       ${item.img
-        ? `<img src="${item.img}" alt="${item.name}" loading="lazy"
+        ? `<img src="${item.img}?t=${Date.now()}" alt="${item.name}" loading="lazy"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         : ''}
       <div class="img-fallback" style="display:${item.img ? 'none' : 'flex'}">${item.emoji || '🏪'}</div>

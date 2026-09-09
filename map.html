@@ -135,7 +135,7 @@ placeList.forEach(place=>{
     html: `
     <div class="pin-container">
       <div class="pin-circle">
-        <img class="pin-img" src="${place.img}" alt="${place.name}"
+        <img class="pin-img" src="${place.img}?t=${Date.now()}" alt="${place.name}"
              style="object-position:${place.pos || '50% 50%'};">
       </div>
       <div class="pin-point"></div>
