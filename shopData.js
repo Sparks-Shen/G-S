@@ -13,6 +13,6 @@ const placeList = [
     name:"上海中心大厦商铺",
     img:"assets/img/shop.jpg",
     link:"places/shop1.html"
-  }
+  },
   { lng: 121.410122, lat: 31.21905, name:"大寶口福·海鲜排档（长宁来福士店）", img:"assets/img/大寶口福·海鲜排档（长宁来福士店）.png", link:"places/大寶口福·海鲜排档（长宁来福士店）.html" },
 ];

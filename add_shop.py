@@ -131,7 +131,7 @@ def html_esc(s):
 
 
 def append_entry(data_file, entry_line):
-    """在数据文件末尾的 ]; 之前插入一行"""
+    """在数据文件末尾的 ]; 之前插入一行；上一条数据结尾缺逗号时自动补上"""
     path = os.path.join(BASE, data_file)
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -139,7 +139,14 @@ def append_entry(data_file, entry_line):
     if idx == -1:
         print(f"!! 在 {data_file} 里找不到结尾 ]; ，请检查文件格式")
         return False
-    content = content[:idx] + entry_line + content[idx:]
+    before = content[:idx]
+    lines = before.splitlines()
+    last = lines[-1].strip() if lines else ""
+    # 上一条数据如果既不是逗号结尾、也不是注释或开括号，说明缺逗号，补一个
+    if last and not last.endswith(",") and not last.startswith("//") \
+            and not last.endswith("[") and not last.endswith("{"):
+        before = before.rstrip() + ","
+    content = before + "\n" + entry_line + content[idx:]
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
     return True
