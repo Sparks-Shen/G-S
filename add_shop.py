@@ -15,6 +15,7 @@ G&S足迹回忆 · 商家添加工具
 提示：填图片路径时，直接把图片文件从资源管理器拖进窗口即可。
 """
 
+import hashlib
 import math
 import os
 import re
@@ -120,6 +121,14 @@ def sanitize(name):
     s = re.sub(r'[\\/:*?"<>|]', "", name)
     s = s.replace(" ", "")
     return s or "shop"
+
+
+def _sha1(path):
+    h = hashlib.sha1()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def js_str(s):
@@ -276,6 +285,8 @@ def add_shop(cat):
     if not addr:
         print("地址不能为空，本次取消")
         return
+    # 反斜杠统一改成斜杠，避免网页显示/转义出问题
+    addr = addr.replace("\\", "/")
 
     # 经纬度可选：填了才会出现在地图上
     # 高德/百度拾取器里复制的就是“经度,纬度”格式，直接整段粘贴即可
@@ -309,8 +320,9 @@ def add_shop(cat):
 
     quote = ask("回忆语录（可选）")
 
-    # 图片：拖入窗口或手输路径
+    # 图片：先记住源路径，等确认通过后再复制，避免取消时留下多余文件
     img_file = None
+    img_src = None
     img_path = ask("店铺图片路径（可选，直接把图片文件拖进来）")
     if img_path:
         img_path = fix_path(img_path)
@@ -319,14 +331,7 @@ def add_shop(cat):
         else:
             ext = os.path.splitext(img_path)[1].lower() or ".jpg"
             img_file = sanitize(name) + ext
-            dest = os.path.join(BASE, "assets", "img", img_file)
-            if os.path.abspath(img_path) != os.path.abspath(dest):
-                overwrite = True
-                if os.path.exists(dest):
-                    overwrite = ask(f"assets/img/{img_file} 已存在，覆盖吗？(y/n)", "n").lower() == "y"
-                if overwrite:
-                    shutil.copyfile(img_path, dest)
-                    print(f"  图片已复制到 assets/img/{img_file}")
+            img_src = img_path
 
     emoji = ask("卡片占位表情（可选）", c["emoji"])
 
@@ -355,6 +360,22 @@ def add_shop(cat):
     if ask("确认写入并上传 GitHub？(y/n)", "y").lower() != "y":
         print("已取消")
         return
+
+    # 0) 复制图片（确认之后才做）
+    if img_file and img_src:
+        dest = os.path.join(BASE, "assets", "img", img_file)
+        if os.path.abspath(img_src) != os.path.abspath(dest):
+            if os.path.exists(dest):
+                same = (os.path.getsize(dest) == os.path.getsize(img_src)
+                        and _sha1(dest) == _sha1(img_src))
+                if same:
+                    print(f"  assets/img/{img_file} 已存在相同图片，跳过复制")
+                elif ask(f"assets/img/{img_file} 已存在且内容不同，覆盖吗？(y/n)", "n").lower() == "y":
+                    shutil.copyfile(img_src, dest)
+                    print(f"  图片已复制到 assets/img/{img_file}")
+            else:
+                shutil.copyfile(img_src, dest)
+                print(f"  图片已复制到 assets/img/{img_file}")
 
     # 1) 写入卡片数据（foodData.js / funData.js）
     img_field = f', img:"assets/img/{img_file}"' if img_file else ""
