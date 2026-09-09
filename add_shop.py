@@ -321,6 +321,7 @@ def add_shop(cat):
     quote = ask("回忆语录（可选）")
 
     # 图片：先记住源路径，等确认通过后再复制，避免取消时留下多余文件
+    # 如果图片已经在 assets/img/ 文件夹里，直接用它现有的文件名，不再复制第二份
     img_file = None
     img_src = None
     img_path = ask("店铺图片路径（可选，直接把图片文件拖进来）")
@@ -329,9 +330,15 @@ def add_shop(cat):
         if not os.path.isfile(img_path):
             print(f"!! 找不到图片文件：{img_path}（本次不带图片）")
         else:
-            ext = os.path.splitext(img_path)[1].lower() or ".jpg"
-            img_file = sanitize(name) + ext
-            img_src = img_path
+            img_dir = os.path.normcase(os.path.abspath(os.path.join(BASE, "assets", "img")))
+            src_abs = os.path.normcase(os.path.abspath(img_path))
+            if src_abs.startswith(img_dir + os.sep):
+                img_file = os.path.basename(img_path)
+                print(f"  （图片已在 assets/img/ 里，直接使用 {img_file}）")
+            else:
+                ext = os.path.splitext(img_path)[1].lower() or ".jpg"
+                img_file = sanitize(name) + ext
+                img_src = img_path
 
     emoji = ask("卡片占位表情（可选）", c["emoji"])
 
