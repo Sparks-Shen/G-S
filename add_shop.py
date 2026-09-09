@@ -8,13 +8,14 @@ G&S足迹回忆 · 商家添加工具
 按提示依次填写，脚本会自动完成：
   1) 店铺图片复制到 assets/img/
   2) 商家卡片数据写入 foodData.js / funData.js
-  3) 填了经纬度的话，地图坐标写入 shopData.js
+  3) 填了经纬度的话，自动把高德/百度坐标转换成地图用的标准坐标，写入 shopData.js
   4) 生成 places/ 下的商家详情页（含回忆语录）
   5) git pull --rebase → add → commit → push，自动更新到 GitHub
 
 提示：填图片路径时，直接把图片文件从资源管理器拖进窗口即可。
 """
 
+import math
 import os
 import re
 import shutil
@@ -22,6 +23,69 @@ import subprocess
 import sys
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+
+# ---------- 坐标转换（高德/百度 → 地图用的 WGS-84 标准坐标） ----------
+
+_PI = math.pi
+_A = 6378245.0
+_EE = 0.00669342162296594323
+_X_PI = _PI * 3000.0 / 180.0
+
+
+def _out_of_china(lng, lat):
+    """国外坐标不参与转换（偏移算法只对中国生效）"""
+    return not (72.004 <= lng <= 137.8347 and 0.8293 <= lat <= 55.8271)
+
+
+def _transform_lat(x, y):
+    ret = -100.0 + 2.0*x + 3.0*y + 0.2*y*y + 0.1*x*y + 0.2*math.sqrt(abs(x))
+    ret += (20.0*math.sin(6.0*x*_PI) + 20.0*math.sin(2.0*x*_PI)) * 2.0/3.0
+    ret += (20.0*math.sin(y*_PI) + 40.0*math.sin(y/3.0*_PI)) * 2.0/3.0
+    ret += (160.0*math.sin(y/12.0*_PI) + 320*math.sin(y*_PI/30.0)) * 2.0/3.0
+    return ret
+
+
+def _transform_lng(x, y):
+    ret = 300.0 + x + 2.0*y + 0.1*x*x + 0.1*x*y + 0.1*math.sqrt(abs(x))
+    ret += (20.0*math.sin(6.0*x*_PI) + 20.0*math.sin(2.0*x*_PI)) * 2.0/3.0
+    ret += (20.0*math.sin(x*_PI) + 40.0*math.sin(x/3.0*_PI)) * 2.0/3.0
+    ret += (150.0*math.sin(x/12.0*_PI) + 300.0*math.sin(x/30.0*_PI)) * 2.0/3.0
+    return ret
+
+
+def wgs84_to_gcj02(lng, lat):
+    if _out_of_china(lng, lat):
+        return lng, lat
+    dlat = _transform_lat(lng - 105.0, lat - 35.0)
+    dlng = _transform_lng(lng - 105.0, lat - 35.0)
+    radlat = lat / 180.0 * _PI
+    magic = math.sin(radlat)
+    magic = 1 - _EE * magic * magic
+    sqrtmagic = math.sqrt(magic)
+    dlat = (dlat * 180.0) / ((_A * (1 - _EE)) / (magic * sqrtmagic) * _PI)
+    dlng = (dlng * 180.0) / (_A / sqrtmagic * math.cos(radlat) * _PI)
+    return lng + dlng, lat + dlat
+
+
+def gcj02_to_wgs84(lng, lat):
+    """高德/腾讯（GCJ-02）→ WGS-84，迭代逼近，误差小于 1 米"""
+    if _out_of_china(lng, lat):
+        return lng, lat
+    wgs_lng, wgs_lat = lng, lat
+    for _ in range(10):
+        glng, glat = wgs84_to_gcj02(wgs_lng, wgs_lat)
+        wgs_lng += lng - glng
+        wgs_lat += lat - glat
+    return wgs_lng, wgs_lat
+
+
+def bd09_to_wgs84(lng, lat):
+    """百度（BD-09）→ WGS-84"""
+    x = lng - 0.0065
+    y = lat - 0.006
+    z = math.sqrt(x*x + y*y) - 0.00002*math.sin(y*_X_PI)
+    theta = math.atan2(y, x) - 0.000003*math.cos(x*_X_PI)
+    return gcj02_to_wgs84(z*math.cos(theta), z*math.sin(theta))
 
 CATEGORIES = {
     "1": {"name": "美食", "data": "foodData.js", "page": "food.html", "emoji": "🍜"},
@@ -207,14 +271,34 @@ def add_shop(cat):
         return
 
     # 经纬度可选：填了才会出现在地图上
+    # 高德/百度拾取器里复制的就是“经度,纬度”格式，直接整段粘贴即可
     lat_f = lng_f = None
-    lat = ask("纬度（可选，填了才会上地图）")
-    if lat:
+    coords = ask("经纬度（可选，复制拾取器里的“经度,纬度”直接粘贴；填了才会上地图）")
+    if coords:
+        parts = re.split(r"[,，\s]+", coords)
         try:
-            lat_f = float(lat)
-            lng_f = float(ask("经度"))
+            if len(parts) == 1:
+                lat_f = float(parts[0])
+                lng_f = float(ask("经度"))
+            else:
+                lng_f, lat_f = float(parts[0]), float(parts[1])
         except ValueError:
-            print("!! 经纬度必须是数字，本次不加入地图")
+            print("!! 经纬度格式不对，本次不加入地图")
+            lat_f = lng_f = None
+        else:
+            print("坐标来源？")
+            print(" [1] 高德/腾讯地图（推荐，国内搜店名最准）")
+            print(" [2] 百度地图")
+            print(" [3] OpenStreetMap / 其他（已是标准坐标）")
+            src = ask("请选择", "1")
+            if src == "2":
+                lng_f, lat_f = bd09_to_wgs84(lng_f, lat_f)
+                print("  （已从百度坐标自动转换）")
+            elif src == "3":
+                print("  （标准坐标，直接使用）")
+            else:
+                lng_f, lat_f = gcj02_to_wgs84(lng_f, lat_f)
+                print("  （已从高德坐标自动转换）")
 
     quote = ask("回忆语录（可选）")
 
@@ -253,7 +337,7 @@ def add_shop(cat):
     print(f"店名：{name}")
     print(f"地址：{addr}")
     if lat_f is not None:
-        print(f"经纬度：{lat_f}, {lng_f}")
+        print(f"经纬度：经度 {lng_f:.6f} / 纬度 {lat_f:.6f}（写入地图用的标准坐标）")
     if quote:
         print(f"回忆语录：{quote}")
     if img_file:

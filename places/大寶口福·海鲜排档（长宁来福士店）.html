@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大寶口福·海鲜排档（长宁来福士店）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+html{height:100%;}
+body{background:#f5f8fb;min-height:100%;-webkit-overflow-scrolling:touch;}
+
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  margin:22px 0 0 28px;
+  padding:8px 16px;
+  background:#fff;
+  border:1px solid #dbe7f2;
+  border-radius:999px;
+  font-size:13px;color:#5a7189;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.back:hover{border-color:#bcd6ec;color:#22354a;box-shadow:0 4px 10px rgba(60,110,160,0.10);}
+
+.page{max-width:760px;margin:0 auto;padding:0 28px 50px;animation:fadeUp 0.5s ease;}
+.hero{
+  margin-top:20px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid #e7eef5;
+  box-shadow:0 8px 24px rgba(60,110,160,0.10);
+  background:#eef2f6;
+}
+.hero img{width:100%;display:block;max-height:440px;object-fit:cover;}
+.hero-fallback{
+  aspect-ratio:16/9;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:64px;color:#b6c0cc;
+  background:linear-gradient(135deg,#eef4fa,#e2ecf6);
+}
+
+h1{margin-top:26px;font-size:26px;color:#1a2533;letter-spacing:1px;}
+.addr{margin-top:10px;font-size:14px;color:#8a97a6;}
+
+.memo{
+  margin-top:30px;
+  background:#fff;
+  border:1px dashed #c9dbea;
+  border-radius:14px;
+  padding:24px;
+  color:#5a7189;font-size:14px;line-height:1.8;
+}
+.memo .memo-title{color:#4a647e;font-weight:bold;margin-bottom:8px;letter-spacing:1px;}
+
+@media(max-width:768px){
+  .back{margin-left:16px;}
+  .page{padding:0 16px 40px;}
+  h1{font-size:22px;}
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<a class="back" onclick="go('food.html')">← 返回美食信息</a>
+
+<div class="page">
+  <div class="hero">
+    <img src="../assets/img/大寶口福·海鲜排档（长宁来福士店）.png" alt="大寶口福·海鲜排档（长宁来福士店）">
+  </div>
+  <h1>大寶口福·海鲜排档（长宁来福士店）</h1>
+  <p class="addr">📍 上海市长宁区长宁路1191号</p>
+
+  <div class="memo">
+    <div class="memo-title">我们的回忆</div>
+    2026暑假一天gjy突然问吃不吃晚饭，一开始选在浦东吃烤肉，由于实在过远所以折中选在了长宁区来福士的一家江浙菜。很幸运当天白天还在下雨sdc出门就不下了，gjy家虽然大暴雨但是她根本不去室外淋不到，两人在中山公园地铁站见了面。坐下后两人都觉得很好笑，第一次和同龄人去这样的饭店吃饭，带鱼很新鲜味道也不错，大头虾的油爆做法也很棒，海鲜泡饭很难吃，两人边吃边聊坐了很久，sdc被赋予斯文吃饭的称号。
+  </div>
+</div>
+
+<script>
+function go(page){
+  if(parent.navigate){ parent.navigate(page); }
+  else { location.href = page; }
+}
+</script>
+</body>
+</html>
