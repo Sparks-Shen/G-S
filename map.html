@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 html, body {
@@ -33,6 +34,9 @@ h2{
   letter-spacing:1px;
 }
 .map-head .sub{font-size:13px;color:#9aa7b5;}
+@media(max-width:768px){
+  .map-head{padding:12px 14px 8px;}
+}
 #map{
   flex:1;
   width:100%;

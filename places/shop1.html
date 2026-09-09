@@ -2,10 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>上海中心大厦商铺</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
-body{background:#f5f8fb;min-height:100%;}
+html{height:100%;}
+body{background:#f5f8fb;min-height:100%;-webkit-overflow-scrolling:touch;}
 
 .back{
   display:inline-flex;align-items:center;gap:6px;
@@ -50,6 +52,13 @@ h1{margin-top:26px;font-size:26px;color:#1a2533;letter-spacing:1px;}
   color:#8a97a6;font-size:14px;line-height:1.8;
 }
 .memo .memo-title{color:#4a647e;font-weight:bold;margin-bottom:8px;letter-spacing:1px;}
+
+/* 手机端 */
+@media(max-width:768px){
+  .back{margin-left:16px;}
+  .page{padding:0 16px 40px;}
+  h1{font-size:22px;}
+}
 
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(14px);}

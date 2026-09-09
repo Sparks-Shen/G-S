@@ -2,10 +2,11 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>G&S足迹回忆</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
-body{display:flex;height:100vh;overflow:hidden;background:#eef3f8;}
+body{display:flex;height:100vh;height:100dvh;overflow:hidden;background:#eef3f8;}
 
 /* 左侧侧边栏 */
 .sidebar{
@@ -59,6 +60,38 @@ body{display:flex;height:100vh;overflow:hidden;background:#eef3f8;}
   letter-spacing:1px;
 }
 
+/* 手机端：侧边栏变成顶部导航条，右侧内容占满剩余空间 */
+@media(max-width:768px){
+  body{flex-direction:column;}
+  .sidebar{
+    width:100%;
+    flex-direction:row;
+    align-items:stretch;
+    gap:8px;
+    padding:8px 10px;
+    border-right:none;
+    border-bottom:1px solid #e3ecf5;
+    overflow-y:visible;
+  }
+  .brand, .foot{display:none;}
+  .menu-item{
+    flex:1;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    margin-bottom:0;
+    padding:8px 2px;
+    border-radius:10px;
+    touch-action:manipulation;
+  }
+  .menu-item:hover{transform:none;box-shadow:none;}
+  .menu-item .icon{font-size:18px;}
+  .menu-item .cn{font-size:12px;}
+  .menu-item .en{display:none;}
+  .main{flex:1;min-height:0;}
+}
+
 /* 右侧iframe容器 */
 .main{flex:1;}
 iframe{
@@ -66,6 +99,7 @@ iframe{
   height:100%;
   border:none;
   background:#f5f8fb;
+  -webkit-overflow-scrolling:touch;
 }
 </style>
 </head>
