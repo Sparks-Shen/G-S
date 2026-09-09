@@ -132,7 +132,8 @@ def _sha1(path):
 
 
 def _center_square_crop(path):
-    """把图片裁成正中间最大的正方形：上下左右都居中，圆头像就从这块区域里取"""
+    """把图片裁成正中间最大的正方形：上下左右都居中，圆头像就从这块区域里取。
+    先写临时文件再原子替换，避免原文件被占用时失败。"""
     try:
         from PIL import Image
         img = Image.open(path)
@@ -142,9 +143,19 @@ def _center_square_crop(path):
             return False  # 本来就是正方形，不用裁
         x0, y0 = (w - s) // 2, (h - s) // 2
         img.load()
-        img.crop((x0, y0, x0 + s, y0 + s)).save(path)
+        out = img.crop((x0, y0, x0 + s, y0 + s))
+        tmp = path + ".crop_tmp"
+        out.save(tmp)
+        os.replace(tmp, path)
         print(f"  已按正中间裁剪为最大正方形：{w}×{h} → {s}×{s}")
         return True
+    except PermissionError:
+        print("  !! 裁剪失败：图片文件被占用（可能正被看图软件打开），关掉它再重新添加即可")
+        try:
+            os.remove(path + ".crop_tmp")
+        except OSError:
+            pass
+        return False
     except Exception as e:
         print(f"  !! 裁剪失败（不影响使用）：{e}")
         return False

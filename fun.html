@@ -99,16 +99,22 @@ body{background:#f5f8fb;min-height:100%;-webkit-overflow-scrolling:touch;}
 <p class="tip">点击卡片查看详情；</p>
 <div id="grid" class="grid"></div>
 
-<script src="funData.js"></script>
 <script>
-const grid = document.getElementById('grid');
-document.getElementById('count').textContent = '共 ' + funList.length + ' 家';
+// 数据文件带时间戳加载，避免浏览器缓存旧数据
+var dataScript = document.createElement('script');
+dataScript.src = 'funData.js?t=' + Date.now();
+dataScript.onload = renderCards;
+document.head.appendChild(dataScript);
 
 // 在 iframe 里时只切换右侧内容，侧边栏保持不动；单独打开时直接跳转
 function openDetail(link){
   if(parent.navigate){ parent.navigate(link); }
   else { location.href = link; }
 }
+
+function renderCards(){
+const grid = document.getElementById('grid');
+document.getElementById('count').textContent = '共 ' + funList.length + ' 家';
 
 funList.forEach((item,i)=>{
   const card = document.createElement('div');
@@ -131,6 +137,7 @@ funList.forEach((item,i)=>{
   else { card.style.cursor = 'default'; }
   grid.appendChild(card);
 });
+}
 </script>
 </body>
 </html>

@@ -120,10 +120,15 @@ h2{
   <div id="map"></div>
 </div>
 
-<!-- 店铺配置文件 -->
-<script src="shopData.js"></script>
+<!-- 店铺配置：动态加载并带时间戳，避免浏览器缓存旧数据 -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+var shopDataScript = document.createElement('script');
+shopDataScript.src = 'shopData.js?t=' + Date.now();
+shopDataScript.onload = initMap;
+document.head.appendChild(shopDataScript);
+
+function initMap(){
 const mymap = L.map('map').setView([31.22, 121.46], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
@@ -176,6 +181,7 @@ placeList.forEach(place=>{
     this._icon.querySelector('.pin-container').classList.remove('hover');
   })
 })
+}
 </script>
 </body>
 </html>
