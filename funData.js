@@ -6,9 +6,7 @@
 //   link    —— 可选，点击卡片跳转的详情页，例如 "places/xxx.html"
 const funList = [
   { name:"乔氏·品绅台球（长宁来福士店）", address:"上海市长宁区长宁路1139号", img:"assets/img/长宁来福士台球.jpg", emoji:"🎱", link:"places/长宁来福士台球.html" },
-  { name:"示例商家 · 娱乐", address:"示例地址，替换成真实店名和地址", emoji:"🎮" },
-  { name:"示例商家 · 娱乐", address:"示例地址，替换成真实店名和地址", emoji:"🎮" },
-  { name:"示例商家 · 娱乐", address:"示例地址，替换成真实店名和地址", emoji:"🎮" },
+  
   // 真实条目的完整写法示例：
   // { name:"某某KTV", address:"上海市XX区XX路XX号", img:"assets/img/某KTV.jpg", emoji:"🎤", link:"places/某KTV.html" },
 ];
