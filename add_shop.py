@@ -458,10 +458,21 @@ def add_shop(cat):
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.stdout.strip():
         run_git(["commit", "-m", f"add: 新增{c['name']}商家「{name}」"])
-    if run_git(["push"]):
-        print("✅ 已上传 GitHub！等 1~2 分钟刷新网站即可看到。")
+    # push 前再拉一次：防止填写期间远端又出现新提交（比如在 GitHub 网页上直接改过数据）
+    if run_git(["pull", "--rebase", "origin", "master"]):
+        if run_git(["push"]):
+            print("✅ 已上传 GitHub！等 1~2 分钟刷新网站即可看到。")
+        else:
+            print("!! push 失败。可能是网络问题，稍后在文件夹里手动运行：git push")
     else:
-        print("!! push 失败。可能是网络问题，稍后在文件夹里手动运行：git push")
+        # pull 失败：可能是网络不通，也可能是和远端改动冲突。
+        # 若卡在冲突里就先退出 rebase，别把仓库留在半路上（本地提交都还在）。
+        if os.path.isdir(os.path.join(BASE, ".git", "rebase-merge")):
+            run_git(["rebase", "--abort"])
+        print("!! 拉取远端失败，本次未上传（本地改动已提交，不会丢）")
+        print("   请在 Git Bash 里手动运行：git pull --rebase origin master")
+        print("   如果提示冲突，打开冲突文件，把 <<<<<<< / ======= / >>>>>>> 标记之间的内容合并好，")
+        print("   然后运行：git add -A && git rebase --continue && git push")
 
 
 def main():
