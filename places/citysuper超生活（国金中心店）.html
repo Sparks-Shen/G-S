@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>citysuper超生活（国金中心店）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+html{height:100%;}
+body{background:#f5f8fb;min-height:100%;-webkit-overflow-scrolling:touch;}
+
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  margin:22px 0 0 28px;
+  padding:8px 16px;
+  background:#fff;
+  border:1px solid #dbe7f2;
+  border-radius:999px;
+  font-size:13px;color:#5a7189;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.back:hover{border-color:#bcd6ec;color:#22354a;box-shadow:0 4px 10px rgba(60,110,160,0.10);}
+
+.page{max-width:760px;margin:0 auto;padding:0 28px 50px;animation:fadeUp 0.5s ease;}
+.hero{
+  margin-top:20px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid #e7eef5;
+  box-shadow:0 8px 24px rgba(60,110,160,0.10);
+  background:#eef2f6;
+}
+.hero img{width:100%;display:block;max-height:440px;object-fit:cover;}
+.hero-fallback{
+  aspect-ratio:16/9;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:64px;color:#b6c0cc;
+  background:linear-gradient(135deg,#eef4fa,#e2ecf6);
+}
+
+h1{margin-top:26px;font-size:26px;color:#1a2533;letter-spacing:1px;}
+.addr{margin-top:10px;font-size:14px;color:#8a97a6;}
+
+.memo{
+  margin-top:30px;
+  background:#fff;
+  border:1px dashed #c9dbea;
+  border-radius:14px;
+  padding:24px;
+  color:#5a7189;font-size:14px;line-height:1.8;
+}
+.memo .memo-title{color:#4a647e;font-weight:bold;margin-bottom:8px;letter-spacing:1px;}
+
+@media(max-width:768px){
+  .back{margin-left:16px;}
+  .page{padding:0 16px 40px;}
+  h1{font-size:22px;}
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<a class="back" onclick="go('fun.html')">← 返回娱乐信息</a>
+
+<div class="page">
+  <div class="hero">
+    <img src="../assets/img/citysuper.png" alt="citysuper超生活（国金中心店）">
+  </div>
+  <h1>citysuper超生活（国金中心店）</h1>
+  <p class="addr">📍 上海市浦东新区世纪大道8号</p>
+
+  <div class="memo">
+    <div class="memo-title">我们的回忆</div>
+    gjy常说自己小时候经常来ifc因为来这家超市买东西，当天吃完晚饭去b2溜了一圈，有各种寄人篱下的品牌小店，有昂贵但高品质的牛肉，还有晚间会打折的果切。
+  </div>
+</div>
+
+<script>
+function go(page){
+  if(parent.navigate){ parent.navigate(page); }
+  else { location.href = page; }
+}
+// 图片地址加时间戳，避免浏览器缓存旧图
+document.querySelectorAll('img').forEach(function(i){
+  if(i.src && i.src.indexOf('?t=') === -1){ i.src += '?t=' + Date.now(); }
+});
+</script>
+</body>
+</html>

@@ -11,4 +11,6 @@ const funList = [
   // { name:"某某KTV", address:"上海市XX区XX路XX号", img:"assets/img/某KTV.jpg", emoji:"🎤", link:"places/某KTV.html" },
 
   { name:"百丽宫影城（国金中心店）", address:"上海市浦东新区世纪大道8号", img:"assets/img/百丽宫ifc.jpg", emoji:"🎮", link:"places/百丽宫影城（国金中心店）.html" },
+
+  { name:"citysuper超生活（国金中心店）", address:"上海市浦东新区世纪大道8号", img:"assets/img/citysuper.png", emoji:"🎮", link:"places/citysuper超生活（国金中心店）.html" },
 ];
