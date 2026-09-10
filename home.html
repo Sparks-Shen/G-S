@@ -97,8 +97,9 @@ body{
 <div class="foot">Created by Spark_Shen</div>
 <script>
 // 在 iframe 里时通知外层切换页面；单独打开时直接跳转
+// true = 强制重新加载，保证打开时能看到最新数据
 function go(page){
-  if(parent.navigate){ parent.navigate(page); }
+  if(parent.navigate){ parent.navigate(page, true); }
   else { location.href = page; }
 }
 </script>

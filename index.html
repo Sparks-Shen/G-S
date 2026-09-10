@@ -92,15 +92,19 @@ body{display:flex;height:100vh;height:100dvh;overflow:hidden;background:#eef3f8;
   .main{flex:1;min-height:0;}
 }
 
-/* 右侧iframe容器 */
-.main{flex:1;}
-iframe{
+/* 右侧内容区：每个板块一个 iframe，切换时只显示/隐藏、不重新加载，
+   这样从详情页返回时，地图的缩放位置、列表的滚动位置都还是离开时的样子 */
+.main{flex:1;position:relative;min-height:0;}
+.panel{
+  position:absolute;inset:0;
   width:100%;
   height:100%;
   border:none;
   background:#f5f8fb;
   -webkit-overflow-scrolling:touch;
+  display:none;
 }
+.panel.show{display:block;}
 </style>
 </head>
 <body>
@@ -132,34 +136,62 @@ iframe{
   <div class="foot">2021/09 <-> ??????</div>
 </div>
 
-<!-- 右侧用来加载各个独立页面 -->
+<!-- 右侧内容区：各板块 iframe 常驻（首次点开才加载），商家详情页单独一个 iframe -->
 <div class="main">
-  <iframe id="contentFrame" src="home.html"></iframe>
+  <iframe class="panel show" id="f-home" src="home.html" data-src="home.html"></iframe>
+  <iframe class="panel" id="f-food" data-src="food.html"></iframe>
+  <iframe class="panel" id="f-fun" data-src="fun.html"></iframe>
+  <iframe class="panel" id="f-map" data-src="map.html"></iframe>
+  <iframe class="panel" id="f-detail"></iframe>
 </div>
 
 <script>
 const menuItems = document.querySelectorAll('.menu-item');
-const frame = document.getElementById('contentFrame');
+const panels = document.querySelectorAll('.panel');
+let currentPanel = document.getElementById('f-home');
 
 // 切换页面的统一入口：侧边栏、主页入口卡片、商家详情页的返回键都会调用它
-// 如果目标页面不是菜单里的板块（比如商家详情页），就保持当前高亮不变
-function navigate(page){
+// 每个板块一个常驻 iframe，切换时只显示/隐藏、不重新加载，所以：
+//   从详情页返回时，地图的缩放位置、美食/娱乐列表的滚动位置都还是离开时的样子
+// fresh=true（侧边栏/主页入口点击）才强制重新加载，保证能看到最新数据
+function navigate(page, fresh){
   const match = [...menuItems].find(m=>m.dataset.page===page);
   if(match){
     menuItems.forEach(m=>m.classList.toggle('active', m===match));
+    const panel = document.getElementById('f-' + page.replace('.html',''));
+    if(fresh || !panel.src || panel.src === 'about:blank'){
+      panel.src = panel.dataset.src; // 已加载过的页面再赋同样的 src 也会强制刷新
+    }
+    showPanel(panel);
+  } else {
+    // 商家详情页等非菜单页面：在单独的 iframe 里打开，当前菜单高亮保持不变
+    const detail = document.getElementById('f-detail');
+    if(detail.src !== new URL(page, location.href).href){
+      detail.src = page;
+    }
+    showPanel(detail);
   }
-  frame.src = page;
 }
+
+function showPanel(panel){
+  panels.forEach(p=>p.classList.toggle('show', p===panel));
+  if(panel !== currentPanel){
+    currentPanel = panel;
+    // 切换时的淡入过渡
+    panel.style.animation = 'none';
+    panel.offsetHeight; // 触发重排，让动画可以重复播放
+    panel.style.animation = 'fadeIn 0.35s ease';
+  }
+}
+
 menuItems.forEach(item=>{
-  item.onclick = ()=>navigate(item.dataset.page);
+  item.onclick = ()=>navigate(item.dataset.page, true);
 });
 window.navigate = navigate;
 
-// 页面切换时的淡入过渡
-frame.addEventListener('load', ()=>{
-  frame.style.animation = 'none';
-  frame.offsetHeight; // 触发重排，让动画可以重复播放
-  frame.style.animation = 'fadeIn 0.35s ease';
+// 主页首次加载时的淡入过渡
+document.getElementById('f-home').addEventListener('load', function(){
+  this.style.animation = 'fadeIn 0.35s ease';
 });
 </script>
 <style>

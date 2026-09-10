@@ -181,6 +181,14 @@ placeList.forEach(place=>{
     this._icon.querySelector('.pin-container').classList.remove('hover');
   })
 })
+
+// 地图 iframe 被隐藏再显示（从商家详情页返回）时，容器尺寸可能失准；
+// 页面重新可见后重算一次尺寸，缩放级别和中心位置都保持离开时的样子
+if (window.IntersectionObserver) {
+  new IntersectionObserver(function(entries){
+    if (entries[0].isIntersecting) { mymap.invalidateSize(); }
+  }).observe(document.body);
+}
 }
 </script>
 </body>
