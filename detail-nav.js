@@ -1,7 +1,7 @@
 // 商家详情页的「上一家 / 下一家」浏览导航（像翻看图片一样）
-// 浏览顺序 = 美食列表 + 娱乐列表。加载数据文件后找到当前页面在浏览链里的位置，
-// 在页面左右两侧生成箭头（键盘 ← / → 也可以翻页）。
-// 所有详情页共用这一份脚本，新增商家不用改任何页面。
+// 浏览链 = 当前页面所属的那个列表：美食只在美食里翻，娱乐只在娱乐里翻，两类不互通。
+// 加载数据文件后找到当前页面在所属列表里的位置，在页面左右两侧生成箭头
+// （键盘 ← / → 也可以翻页）。所有详情页共用这一份脚本，新增商家不用改任何页面。
 (function(){
   // 当前详情页文件名（中文文件名在 location 里是百分号编码，统一解码后比较）
   var me = decodeURIComponent(location.pathname.split('/').pop());
@@ -17,24 +17,30 @@
     return decodeURIComponent(link.split('/').pop());
   }
 
+  // 找到当前页面所属的列表并返回 { items, idx }；不在任何列表里时返回 null
   function buildChain(){
-    var items = [];
-    (typeof foodList !== 'undefined' ? foodList : []).concat(
+    var lists = [
+      typeof foodList !== 'undefined' ? foodList : [],
       typeof funList !== 'undefined' ? funList : []
-    ).forEach(function(it){
-      if (it.link) { items.push({ name: it.name, link: it.link }); }
-    });
-    return items;
+    ];
+    for (var i = 0; i < lists.length; i++){
+      var items = [];
+      lists[i].forEach(function(it){
+        if (it.link) { items.push({ name: it.name, link: it.link }); }
+      });
+      for (var j = 0; j < items.length; j++){
+        if (basename(items[j].link) === me) { return { items: items, idx: j }; }
+      }
+    }
+    return null;
   }
 
   function init(){
-    var chain = buildChain();
-    var idx = -1;
-    for (var i = 0; i < chain.length; i++){
-      if (basename(chain[i].link) === me) { idx = i; break; }
-    }
-    // 不在浏览链里（比如还没收录进列表的示例页）就不显示箭头
-    if (idx === -1 || chain.length < 2) { return; }
+    var found = buildChain();
+    // 不在任何列表里（比如还没收录进列表的示例页）就不显示箭头
+    if (!found || found.items.length < 2) { return; }
+    var chain = found.items;
+    var idx = found.idx;
 
     var prev = idx > 0 ? chain[idx - 1] : null;
     var next = idx < chain.length - 1 ? chain[idx + 1] : null;
