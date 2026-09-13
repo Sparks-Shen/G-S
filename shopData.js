@@ -22,4 +22,6 @@ const placeList = [
   { lng: 121.498529, lat: 31.238028, name:"百丽宫影城（国金中心店）", img:"assets/img/百丽宫ifc.jpg", link:"places/百丽宫影城（国金中心店）.html" },
 
   { lng: 121.49784831335201, lat: 31.23828377190599, name:"citysuper超生活（国金中心店）", img:"assets/img/citysuper.png", link:"places/citysuper超生活（国金中心店）.html" },
+
+  { lng: 121.214254, lat: 31.051626, name:"西北美食", img:"", link:"places/西北美食.html" },
 ];
