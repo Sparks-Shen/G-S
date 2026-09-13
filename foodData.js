@@ -10,4 +10,6 @@ const foodList = [
   { name:"大寶口福·海鲜排档（长宁来福士店）", address:"上海市长宁区长宁路1191号", img:"assets/img/大寶口福·海鲜排档（长宁来福士店）.png", emoji:"🍜", link:"places/大寶口福·海鲜排档（长宁来福士店）.html" },
 
   { name:"西北美食", address:"上海对外经贸大学松江校区北门东北方向", emoji:"🍜", link:"places/西北美食.html" },
+
+  { name:"新重庆鱼小馆", address:"松江区松江大学城文汇路1088弄大学城创业中心二楼", emoji:"🐟", link:"places/新重庆鱼小馆.html" },
 ];

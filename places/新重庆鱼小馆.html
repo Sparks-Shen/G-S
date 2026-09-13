@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新重庆鱼小馆</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,"Songti SC","SimSun",serif;}
+html{height:100%;}
+body{background:#f5f8fb;min-height:100%;-webkit-overflow-scrolling:touch;}
+
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  margin:22px 0 0 28px;
+  padding:8px 16px;
+  background:#fff;
+  border:1px solid #dbe7f2;
+  border-radius:999px;
+  font-size:13px;color:#5a7189;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.back:hover{border-color:#bcd6ec;color:#22354a;box-shadow:0 4px 10px rgba(60,110,160,0.10);}
+
+.page{max-width:760px;margin:0 auto;padding:0 28px 50px;animation:fadeUp 0.5s ease;}
+.hero{
+  margin-top:20px;
+  border-radius:16px;overflow:hidden;
+  border:1px solid #e7eef5;
+  box-shadow:0 8px 24px rgba(60,110,160,0.10);
+  background:#eef2f6;
+}
+.hero img{width:100%;display:block;max-height:440px;object-fit:cover;}
+.hero-fallback{
+  aspect-ratio:16/9;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:64px;color:#b6c0cc;
+  background:linear-gradient(135deg,#eef4fa,#e2ecf6);
+}
+
+h1{margin-top:26px;font-size:26px;color:#1a2533;letter-spacing:1px;}
+.addr{margin-top:10px;font-size:14px;color:#8a97a6;}
+
+.memo{
+  margin-top:30px;
+  background:#fff;
+  border:1px dashed #c9dbea;
+  border-radius:14px;
+  padding:24px;
+  color:#5a7189;font-size:14px;line-height:1.8;
+}
+.memo .memo-title{color:#4a647e;font-weight:bold;margin-bottom:8px;letter-spacing:1px;}
+
+@media(max-width:768px){
+  .back{margin-left:16px;}
+  .page{padding:0 16px 40px;}
+  h1{font-size:22px;}
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<a class="back" onclick="go('food.html')">← 返回美食信息</a>
+
+<div class="page">
+  <div class="hero">
+    <div class="hero-fallback">🐟</div>
+  </div>
+  <h1>新重庆鱼小馆</h1>
+  <p class="addr">📍 松江区松江大学城文汇路1088弄大学城创业中心二楼</p>
+
+  <div class="memo">
+    <div class="memo-title">我们的回忆</div>
+    gjy一直提到这家店，在部门聚餐时发现美味菜品以及超绝性价比，当天就给sdc发了链接推荐。后来在图书馆学完的下午，两人一起骑车前往，sdc记得没错的话应该点了薯条、猪肝爆肚、干锅包菜、椒盐排条，两人无敌大胃袋干了几碗米饭以及桌上所有菜品，非常赞👍。最后两人走路消食回寝，甜品也吃不动了。
+  </div>
+</div>
+
+<script>
+function go(page){
+  if(parent.navigate){ parent.navigate(page); }
+  else { location.href = page; }
+}
+// 图片地址加时间戳，避免浏览器缓存旧图
+document.querySelectorAll('img').forEach(function(i){
+  if(i.src && i.src.indexOf('?t=') === -1){ i.src += '?t=' + Date.now(); }
+});
+</script>
+</body>
+</html>

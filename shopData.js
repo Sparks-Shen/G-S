@@ -24,4 +24,6 @@ const placeList = [
   { lng: 121.49784831335201, lat: 31.23828377190599, name:"citysuper超生活（国金中心店）", img:"assets/img/citysuper.png", link:"places/citysuper超生活（国金中心店）.html" },
 
   { lng: 121.214254, lat: 31.051626, name:"西北美食", img:"", link:"places/西北美食.html" },
+
+  { lng: 121.199005, lat: 31.051858, name:"新重庆鱼小馆", img:"", link:"places/新重庆鱼小馆.html" },
 ];
