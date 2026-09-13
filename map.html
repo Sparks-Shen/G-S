@@ -130,7 +130,9 @@ document.head.appendChild(shopDataScript);
 
 function initMap(){
 // 初始视野覆盖整个上海市（含崇明、青浦等郊区），窗口再小也完整显示
-const mymap = L.map('map').fitBounds([[30.65, 120.85], [31.88, 122.0]], {padding: [15, 15]});
+// worldCopyJump：拖过日期变更线绕进世界的“复制品”时自动跳回原版，
+// 否则底图瓦片会重复显示但店家图标只存在于原版世界，绕一圈回来图标就“消失”了
+const mymap = L.map('map', { worldCopyJump: true }).fitBounds([[30.65, 120.85], [31.88, 122.0]], {padding: [15, 15]});
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(mymap);
