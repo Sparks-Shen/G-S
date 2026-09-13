@@ -13,4 +13,6 @@ const funList = [
   { name:"百丽宫影城（国金中心店）", address:"上海市浦东新区世纪大道8号", img:"assets/img/百丽宫ifc.jpg", emoji:"🎮", link:"places/百丽宫影城（国金中心店）.html" },
 
   { name:"citysuper超生活（国金中心店）", address:"上海市浦东新区世纪大道8号", img:"assets/img/citysuper.png", emoji:"🎮", link:"places/citysuper超生活（国金中心店）.html" },
+
+  { name:"上海市格致中学（黄浦校区）", address:"上海市黄浦区广西北路66号", img:"assets/img/格致中学.jpg", emoji:"🏫", link:"places/上海市格致中学（黄浦校区）.html" },
 ];

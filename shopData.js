@@ -26,4 +26,6 @@ const placeList = [
   { lng: 121.214254, lat: 31.051626, name:"西北美食", img:"", link:"places/西北美食.html" },
 
   { lng: 121.198505, lat: 31.051858, name:"新重庆鱼小馆", img:"", link:"places/新重庆鱼小馆.html" },
+
+  { lng: 121.475977, lat: 31.23296, name:"上海市格致中学（黄浦校区）", img:"assets/img/格致中学.jpg", link:"places/上海市格致中学（黄浦校区）.html" },
 ];
