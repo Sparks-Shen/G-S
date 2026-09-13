@@ -10,13 +10,6 @@ const placeList = [
     img:"assets/img/长宁来福士台球.jpg",
     link:"places/长宁来福士台球.html"
   },
-  {
-    lng:121.501587,
-    lat:31.235787,
-    name:"上海中心大厦商铺",
-    img:"assets/img/shop.jpg",
-    link:"places/shop1.html"
-  },
   { lng: 121.410456, lat: 31.218904, name:"大寶口福·海鲜排档（长宁来福士店）", img:"assets/img/大寶口福·海鲜排档（长宁来福士店）.png", link:"places/大寶口福·海鲜排档（长宁来福士店）.html" },
 
   { lng: 121.498529, lat: 31.238028, name:"百丽宫影城（国金中心店）", img:"assets/img/百丽宫ifc.jpg", link:"places/百丽宫影城（国金中心店）.html" },
