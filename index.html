@@ -138,7 +138,7 @@ body{display:flex;height:100vh;height:100dvh;overflow:hidden;background:#eef3f8;
 
 <!-- 右侧内容区：各板块 iframe 常驻（首次点开才加载），商家详情页单独一个 iframe -->
 <div class="main">
-  <iframe class="panel show" id="f-home" src="home.html" data-src="home.html"></iframe>
+  <iframe class="panel show" id="f-home" data-src="home.html"></iframe>
   <iframe class="panel" id="f-food" data-src="food.html"></iframe>
   <iframe class="panel" id="f-fun" data-src="fun.html"></iframe>
   <iframe class="panel" id="f-map" data-src="map.html"></iframe>
@@ -160,14 +160,15 @@ function navigate(page, fresh){
     menuItems.forEach(m=>m.classList.toggle('active', m===match));
     const panel = document.getElementById('f-' + page.replace('.html',''));
     if(fresh || !panel.src || panel.src === 'about:blank'){
-      panel.src = panel.dataset.src; // 已加载过的页面再赋同样的 src 也会强制刷新
+      // ?t= 时间戳绕开浏览器/GitHub Pages 的缓存；已加载过的页面再赋 src 也会强制刷新
+      panel.src = panel.dataset.src + '?t=' + Date.now();
     }
     showPanel(panel);
   } else {
     // 商家详情页等非菜单页面：在单独的 iframe 里打开，当前菜单高亮保持不变
     const detail = document.getElementById('f-detail');
-    if(detail.src !== new URL(page, location.href).href){
-      detail.src = page;
+    if(detail.src.split('?')[0] !== new URL(page, location.href).href){
+      detail.src = page + '?t=' + Date.now();
     }
     showPanel(detail);
   }
@@ -188,6 +189,9 @@ menuItems.forEach(item=>{
   item.onclick = ()=>navigate(item.dataset.page, true);
 });
 window.navigate = navigate;
+
+// 所有子页面加载都带 ?t= 时间戳，防止 GitHub Pages 的 10 分钟缓存导致“改了看不到”
+document.getElementById('f-home').src = document.getElementById('f-home').dataset.src + '?t=' + Date.now();
 
 // 主页首次加载时的淡入过渡
 document.getElementById('f-home').addEventListener('load', function(){
