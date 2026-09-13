@@ -129,7 +129,8 @@ shopDataScript.onload = initMap;
 document.head.appendChild(shopDataScript);
 
 function initMap(){
-const mymap = L.map('map').setView([31.22, 121.46], 12);
+// 初始视野覆盖整个上海市（含崇明、青浦等郊区），窗口再小也完整显示
+const mymap = L.map('map').fitBounds([[30.65, 120.85], [31.88, 122.0]], {padding: [15, 15]});
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(mymap);
